@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.things.mapper.UserMapper">
+    <select id="findById" parameterType="Long" resultType="com.things.model.User">
+        SELECT * FROM `user` WHERE id=#{id}
+    </select>
+
+    <insert id="insertBatch" parameterType="list">
+        INSERT INTO `user` (`name`,`status`) VALUES
+        <foreach collection="list" item="item"  separator=",">
+            (#{item.name}, 0)
+        </foreach>
+    </insert>
+
+    <update id="updateBatch" parameterType="list">
+        <foreach collection="list" item="item" separator=";" >
+            UPDATE `user`
+            <set>
+                <if test="item.name!=null">
+                    name=#{item.name},
+                </if>
+               <if test="item.status!=0">
+                   status = #{item.status}
+               </if>
+            </set>
+            WHERE id = #{item.id}
+        </foreach>
+    </update>
+</mapper>
